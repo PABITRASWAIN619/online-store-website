@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+  <head>
+    <title>About - SHOPMATE</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial;
+        background: #f5f5f5;
+      }
+
+      /* HEADER */
+      header {
+        background: linear-gradient(45deg, #111, #444);
+        color: white;
+        padding: 15px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      header a {
+        color: white;
+        margin: 0 10px;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+
+      header a:hover {
+        color: orange;
+      }
+
+      /* HERO SECTION */
+      .hero {
+        height: 400px;
+        background: url("https://images.unsplash.com/photo-1607082349566-187342175e2f")
+          no-repeat center/cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+        animation: fadeIn 2s ease-in;
+      }
+
+      .hero h1 {
+        font-size: 50px;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      /* CONTENT */
+      .container {
+        padding: 40px;
+        text-align: center;
+      }
+
+      .container h2 {
+        margin-bottom: 10px;
+      }
+
+      .container p {
+        max-width: 700px;
+        margin: auto;
+        color: #555;
+        line-height: 1.6;
+      }
+
+      /* FEATURES */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 40px;
+      }
+
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: 0.4s;
+        cursor: pointer;
+      }
+
+      .card:hover {
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .card img {
+        width: 80px;
+        margin-bottom: 10px;
+      }
+
+      /* TEAM SECTION */
+      .team {
+        background: #fff;
+        padding: 40px;
+      }
+
+      .team-members {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+      }
+
+      .member {
+        text-align: center;
+        transition: 0.3s;
+      }
+
+      .member img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .member:hover {
+        transform: scale(1.1);
+      }
+
+      /* FOOTER */
+      footer {
+        background: #111;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        margin-top: 40px;
+      }
+
+      /* ANIMATION */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .features {
+          grid-template-columns: 1fr;
+        }
+
+        .team-members {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h2>SHOPMATE</h2>
+
+      <div>🛒 Cart: {{ cart_count }}</div>
+
+      <div>
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Welcome to SHOPMATE</h1>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="container">
+      <h2>Who We Are</h2>
+      <p>
+        SHOPMATE is your one-stop online shopping platform designed to deliver
+        the best products at the best prices. We focus on quality, speed, and
+        customer satisfaction.
+      </p>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+      <div class="card">
+        <img src="https://img.icons8.com/color/96/delivery.png" />
+        <h3>Fast Delivery</h3>
+        <p>Get your products delivered quickly to your doorstep.</p>
+      </div>
+
+      <div class="card">
+        <img src="https://img.icons8.com/color/96/lock--v1.png" />
+        <h3>Secure Payment</h3>
+        <p>100% secure and trusted payment methods.</p>
+      </div>
+
+      <div class="card">
+        <img src="https://img.icons8.com/color/96/customer-support.png" />
+        <h3>24/7 Support</h3>
+        <p>We are always here to help you anytime.</p>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="team">
+      <h2 style="text-align: center">Our Team</h2>
+
+      <div class="team-members">
+        <div class="member">
+          <img src="https://randomuser.me/api/portraits/men/1.jpg" />
+          <h4>Founder</h4>
+        </div>
+
+        <div class="member">
+          <img src="https://randomuser.me/api/portraits/women/2.jpg" />
+          <h4>Designer</h4>
+        </div>
+
+        <div class="member">
+          <img src="https://randomuser.me/api/portraits/men/3.jpg" />
+          <h4>Developer</h4>
+        </div>
+      </div>
+    </section>
+
+    <footer>© 2026 SHOPMATE. All rights reserved.</footer>
+  </body>
+</html>

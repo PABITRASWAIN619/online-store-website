@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <title>UPI Payment</title>
+  </head>
+  <body>
+    <h2>UPI Payment Simulation</h2>
+    <p>Order #{{ order.id }} - ₹{{ order.total }}</p>
+    <form method="POST" action="{% url 'payment_success' %}">
+      {% csrf_token %}
+      <input type="hidden" name="order_id" value="{{ order.id }}" />
+      <button type="submit">Simulate UPI Success</button>
+    </form>
+  </body>
+</html>

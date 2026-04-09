@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Track Order</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        background: #f1f3f6;
+      }
+
+      .container {
+        width: 60%;
+        margin: 50px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+      }
+
+      .timeline {
+        position: relative;
+        margin: 40px 0;
+        padding-left: 40px;
+        border-left: 4px solid #ddd;
+      }
+
+      .step {
+        position: relative;
+        margin-bottom: 30px;
+        padding-left: 20px;
+      }
+
+      .step::before {
+        content: "";
+        position: absolute;
+        left: -14px;
+        top: 5px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ccc;
+        border: 3px solid white;
+      }
+
+      .active::before {
+        background: green;
+      }
+
+      .cancelled::before {
+        background: red;
+      }
+
+      .step h4 {
+        margin: 0;
+      }
+
+      .step p {
+        margin: 5px 0;
+        color: gray;
+        font-size: 14px;
+      }
+
+      .status-box {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 18px;
+      }
+
+      .status-box span {
+        padding: 5px 15px;
+        border-radius: 20px;
+        color: white;
+      }
+
+      .Pending {
+        background: orange;
+      }
+      .Shipped {
+        background: blue;
+      }
+      .Delivered {
+        background: green;
+      }
+      .Cancelled {
+        background: red;
+      }
+
+      button {
+        margin-top: 20px;
+        padding: 10px 15px;
+        border: none;
+        background: black;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>📦 Track Your Order</h2>
+      <h3>Order ID: {{ order.id }}</h3>
+
+      <!-- STATUS -->
+      <div class="status-box">
+        Status:
+        <span class="{{ order.status }}">{{ order.status }}</span>
+      </div>
+
+      {% if order.status == "Cancelled" %}
+
+      <div class="timeline">
+        <div class="step cancelled">
+          <h4>❌ Order Cancelled</h4>
+          <p>Your order has been cancelled.</p>
+        </div>
+      </div>
+
+      {% else %}
+
+      <div class="timeline">
+        <!-- STEP 1 -->
+        <div
+          class="step {% if order.status == 'Pending' or order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}"
+        >
+          <h4>📦 Order Placed</h4>
+          <p>Your order has been placed successfully.</p>
+        </div>
+
+        <!-- STEP 2 -->
+        <div
+          class="step {% if order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}"
+        >
+          <h4>🚚 Shipped</h4>
+          <p>Your order is on the way.</p>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step {% if order.status == 'Delivered' %}active{% endif %}">
+          <h4>🏠 Delivered</h4>
+          <p>Your order has been delivered.</p>
+        </div>
+      </div>
+
+      {% endif %}
+
+      <center>
+        <a href="/orders/">
+          <button>⬅ Back to Orders</button>
+        </a>
+      </center>
+    </div>
+  </body>
+</html>

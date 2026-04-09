@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+  <head>
+    <title>My Orders</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        background: #f5f5f5;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      .order-box {
+        width: 60%;
+        margin: 20px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      .status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        color: white;
+        display: inline-block;
+        font-weight: bold;
+      }
+
+      .Pending {
+        background: orange;
+      }
+      .Shipped {
+        background: blue;
+      }
+      .Delivered {
+        background: green;
+      }
+      .Cancelled {
+        background: red;
+      }
+
+      .total {
+        font-size: 18px;
+        font-weight: bold;
+        color: blue;
+      }
+
+      .track {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+      }
+
+      .step {
+        flex: 1;
+        text-align: center;
+        border-bottom: 3px solid #ccc;
+        padding: 8px;
+      }
+
+      .active {
+        border-color: green;
+        font-weight: bold;
+      }
+
+      .cancel-btn {
+        background: red;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+
+      .cancel-btn:hover {
+        background: darkred;
+      }
+
+      button {
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+        border-radius: 8px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>📦 My Orders</h1>
+
+    {% for order in orders %}
+    <div class="order-box">
+      <h3>🆔 Order ID: {{ order.id }}</h3>
+      <p>📅 Date: {{ order.created_at }}</p>
+
+      <p>📍 Address: {{ order.address }}</p>
+      <p>💳 Payment: {{ order.payment_method }}</p>
+
+      <p class="status {{ order.status }}">📦 Status: {{ order.status }}</p>
+
+      <!-- TRACKING BAR -->
+      <div class="track">
+        <div
+          class="step {% if order.status == 'Pending' or order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}"
+        >
+          Pending
+        </div>
+        <div
+          class="step {% if order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}"
+        >
+          Shipped
+        </div>
+        <div class="step {% if order.status == 'Delivered' %}active{% endif %}">
+          Delivered
+        </div>
+      </div>
+
+      <hr />
+
+      {% for item in order.orderitem_set.all %}
+      <p>{{ item.product.name }} (x{{ item.quantity }})</p>
+      {% endfor %}
+
+      <hr />
+
+      <p class="total">💰 Total: ₹{{ order.total_price }}</p>
+
+      <!-- ACTION BUTTONS -->
+
+      <a href="/track/{{ order.id }}/">
+        <button style="background: blue; color: white">Track Order 🚚</button>
+      </a>
+
+      <a href="/invoice/{{ order.id }}/">
+        <button style="background: orange; color: white">
+          Download Invoice 🧾
+        </button>
+      </a>
+
+      {% if order.status == "Pending" %}
+      <a href="/cancel-order/{{ order.id }}/">
+        <button class="cancel-btn">Cancel Order</button>
+      </a>
+      {% endif %}
+    </div>
+    {% empty %}
+    <h2 style="text-align: center">No Orders Yet 😢</h2>
+    {% endfor %}
+    <a href="/track/{{ order.id }}/">
+      <button style="background: blue; color: white">Track Order 🚚</button>
+    </a>
+  </body>
+</html>

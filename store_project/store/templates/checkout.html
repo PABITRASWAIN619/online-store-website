@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Checkout</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ---------- General Reset ---------- */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", sans-serif;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 30px 10px;
+        z-index: 0;
+      }
+
+      /* ---------- Background Image ---------- */
+      body {
+        background-image: url("https://images.unsplash.com/photo-1581091870626-3b2ce19bb48b?auto=format&fit=crop&w=1950&q=80");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+
+      /* ---------- Overlay for readability ---------- */
+      body::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4); /* semi-transparent overlay */
+        z-index: 0;
+      }
+
+      /* ---------- Heading ---------- */
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.8rem;
+        color: #fff;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+        position: relative;
+        z-index: 1;
+        animation: fadeInDown 1.2s ease forwards;
+      }
+
+      /* ---------- Checkout Container ---------- */
+      .checkout-container {
+        width: 100%;
+        max-width: 750px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 1.2s ease forwards;
+      }
+
+      /* ---------- Cart Items ---------- */
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        padding: 15px 0;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+      }
+
+      .cart-item:hover {
+        transform: translateY(-3px);
+        background: #f0fcf5;
+      }
+
+      .cart-item h3 {
+        font-weight: 600;
+        color: #34495e;
+      }
+
+      .cart-item p {
+        color: #7f8c8d;
+      }
+
+      /* ---------- Total ---------- */
+      .total {
+        text-align: right;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 25px 0;
+        color: #27ae60;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        animation: pulse 2s infinite;
+      }
+
+      /* ---------- Form ---------- */
+      form textarea,
+      form select {
+        width: 100%;
+        padding: 15px 18px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        resize: vertical;
+      }
+
+      form textarea:focus,
+      form select:focus {
+        border-color: #27ae60;
+        box-shadow: 0 0 15px rgba(39, 174, 96, 0.3);
+        outline: none;
+      }
+
+      /* ---------- Buttons ---------- */
+      button {
+        padding: 15px;
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin-bottom: 15px;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      button[type="submit"] {
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+      }
+
+      button[type="submit"]:hover {
+        background: linear-gradient(45deg, #2ecc71, #27ae60);
+      }
+
+      .location-btn {
+        background: linear-gradient(45deg, #3498db, #2980b9);
+      }
+
+      .location-btn:hover {
+        background: linear-gradient(45deg, #2980b9, #3498db);
+      }
+
+      /* ---------- Empty Cart ---------- */
+      .empty-cart {
+        text-align: center;
+        color: #e74c3c;
+        font-size: 1.7rem;
+        padding: 70px 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        animation: shake 1s infinite alternate;
+      }
+
+      /* ---------- Animations ---------- */
+      @keyframes fadeInDown {
+        0% {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(-2px);
+        }
+        100% {
+          transform: translateX(2px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>💳 Checkout</h1>
+
+    {% if items %}
+    <div class="checkout-container">
+      {% for item in items %}
+      <div class="cart-item">
+        <div>
+          <h3>{{ item.product.name }}</h3>
+          <p>Qty: {{ item.quantity }}</p>
+        </div>
+        <p>₹{{ item.product.price }}</p>
+      </div>
+      {% endfor %}
+
+      <div class="total">Total: ₹{{ total }}</div>
+
+      <form method="POST" action="{% url 'checkout' %}">
+        {% csrf_token %}
+        <textarea name="address" placeholder="Enter delivery address" required>
+{{ address }}</textarea
+        >
+
+        <select name="payment" required>
+          <option value="">Select Payment</option>
+          <option value="COD">Cash on Delivery</option>
+          <option value="UPI">UPI</option>
+          <option value="Card">Debit/Credit Card</option>
+          <option value="Razorpay">Razorpay</option>
+        </select>
+
+        <button type="button" class="location-btn" onclick="getLocation()">
+          📍 Use My Location
+        </button>
+        <button type="submit">Place Order</button>
+      </form>
+    </div>
+    {% else %}
+    <div class="empty-cart">Cart is Empty</div>
+    {% endif %}
+
+    <script>
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              fetch(
+                `https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`,
+              )
+                .then((res) => res.json())
+                .then((data) => {
+                  document.querySelector('textarea[name="address"]').value =
+                    data.display_name;
+                });
+            },
+            function () {
+              alert("Unable to get location. Enter manually.");
+            },
+          );
+        } else {
+          alert("Geolocation not supported.");
+        }
+      }
+    </script>
+  </body>
+</html>

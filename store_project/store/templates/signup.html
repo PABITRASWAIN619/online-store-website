@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Signup</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ---------- Reset ---------- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Roboto", sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+
+      /* ---------- Body & Background ---------- */
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("https://images.unsplash.com/photo-1612831664220-1b78e49db6eb?auto=format&fit=crop&w=1950&q=80")
+          no-repeat center center fixed;
+        background-size: cover;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5); /* dark overlay for readability */
+        z-index: 0;
+      }
+
+      /* ---------- Signup Box ---------- */
+      .signup-box {
+        position: relative;
+        z-index: 1;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 50px 40px;
+        border-radius: 20px;
+        width: 380px;
+        text-align: center;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        animation: fadeInUp 1s ease forwards;
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+        color: #333;
+        font-weight: 700;
+      }
+
+      /* ---------- Inputs ---------- */
+      input {
+        width: 100%;
+        padding: 15px 18px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+        outline: none;
+      }
+
+      /* ---------- Buttons ---------- */
+      button {
+        width: 100%;
+        padding: 15px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      button:hover {
+        background: linear-gradient(45deg, #764ba2, #667eea);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      /* ---------- Links ---------- */
+      a {
+        display: block;
+        margin-top: 15px;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      a:hover {
+        color: #764ba2;
+      }
+
+      /* ---------- Animations ---------- */
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="signup-box">
+      <h2>Create Account</h2>
+      <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <input
+          type="password"
+          name="confirm_password"
+          placeholder="Confirm Password"
+          required
+        />
+        <button type="submit">Sign Up</button>
+      </form>
+      <a href="/login/">Already have an account? Login</a>
+    </div>
+  </body>
+</html>
