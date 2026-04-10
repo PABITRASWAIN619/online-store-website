@@ -191,16 +191,29 @@
     <header>
       <h2>SHOPMATE</h2>
 
-      <div>
+      <div style="display: flex; align-items: center; gap: 15px">
         <a href="/home/">Home</a>
         <a href="/cart/">🛒 {{ cart_count }}</a>
 
         {% if user.is_authenticated %}
         <a href="/orders/">Orders</a>
-
-        <!-- 🔥 NEW BUTTONS -->
         <a href="/help/">Help 🆘</a>
-        <a href="/settings/">⚙️ Settings</a>
+        <a href="/settings/">⚙️</a>
+
+        <!-- ✅ PROFILE ICON FIX -->
+        <a
+          href="/profile/"
+          style="display: flex; align-items: center; gap: 8px"
+        >
+          {% if profile and profile.image %}
+          <img
+            src="{{ profile.image.url }}"
+            width="35"
+            height="35"
+            style="border-radius: 50%; object-fit: cover"
+          />
+          {% else %} 👤 Profile {% endif %}
+        </a>
 
         <a href="/logout/">Logout</a>
         {% else %}
@@ -275,7 +288,7 @@
       <div class="footer-col">
         <h3>Contact</h3>
         <p>Email: support@shopmate.com</p>
-        <p>Phone: +91 9876543210</p>
+        <p>Phone: +91 8658302086</p>
         <p>Address: Bhubaneshwar, India</p>
       </div>
 

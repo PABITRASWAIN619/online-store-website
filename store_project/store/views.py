@@ -15,6 +15,23 @@ import razorpay
 import requests
 
 # 🏠 HOME
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from django.http import HttpResponse
+from django.conf import settings
+from django.core.mail import send_mail
+from django.db.models import Sum
+
+from .models import Product, Cart, CartItem, Order, OrderItem, Category, Profile
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+
+import requests
+import razorpay
+
+# 🏠 HOME
 def home(request):
     products = Product.objects.all()
     categories = Category.objects.all()
@@ -25,8 +42,10 @@ def home(request):
 
     if query:
         products = products.filter(name__icontains=query)
+
     if category_id:
         products = products.filter(category__id=category_id)
+
     if sort == "low":
         products = products.order_by('price')
     elif sort == "high":
@@ -46,6 +65,32 @@ def home(request):
         'cart_count': cart_count,
         'profile': profile
     })
+
+
+# 👤 PROFILE
+@login_required
+def profile(request):
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    cart = Cart.objects.filter(user=request.user).first()
+    cart_count = CartItem.objects.filter(cart=cart).count() if cart else 0
+
+    orders_count = Order.objects.filter(user=request.user).count()
+
+    if request.method == "POST":
+        profile.phone = request.POST.get('phone')
+
+        if request.FILES.get('image'):
+            profile.image = request.FILES['image']
+
+        profile.save()
+
+    return render(request, 'profile.html', {
+        'profile': profile,
+        'cart_count': cart_count,
+        'orders_count': orders_count
+    })
+
 
 
 # 🔐 SIGNUP
