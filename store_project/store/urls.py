@@ -49,6 +49,10 @@ urlpatterns = [
 
     # INVOICE
     path('invoice/<int:order_id>/', views.invoice),
+path('add-stock/<int:id>/', views.add_stock),
+path('remove-stock/<int:id>/', views.remove_stock),
+
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

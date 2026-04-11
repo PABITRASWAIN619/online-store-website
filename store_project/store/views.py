@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -97,13 +98,34 @@ def profile(request):
 def signup_view(request):
     if request.method == "POST":
         username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
 
+        # ✅ Gmail validation
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@gmail\.com$', email):
+            messages.error(request, "Email must be a valid Gmail address!")
+            return redirect('/signup/')
+
+        # ✅ Password match check
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match!")
+            return redirect('/signup/')
+
+        # ✅ Username exists check
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect('/signup/')
 
-        User.objects.create_user(username=username, password=password)
+        # ✅ Email exists check (optional but good)
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered")
+            return redirect('/signup/')
+
+        # ✅ Create user
+        User.objects.create_user(username=username, email=email, password=password)
+
+        messages.success(request, "Account created successfully!")
         return redirect('/login/')
 
     return render(request, 'signup.html')
@@ -112,16 +134,24 @@ def signup_view(request):
 # 🔐 LOGIN
 def login_view(request):
     if request.method == "POST":
-        user = authenticate(
-            request,
-            username=request.POST.get('username'),
-            password=request.POST.get('password')
-        )
-        if user:
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        try:
+            user_obj = User.objects.get(email=email)
+            username = user_obj.username
+        except User.DoesNotExist:
+            messages.error(request, "Invalid email")
+            return redirect('/login/')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
             login(request, user)
-            return redirect('/home/')
+            return redirect('/home/')  # or your dashboard
         else:
-            messages.error(request, "Invalid credentials")
+            messages.error(request, "Invalid password")
+            return redirect('/login/')
 
     return render(request, 'login.html')
 
@@ -439,21 +469,32 @@ def send_support(request):
 
 
 # 🛒 ADMIN DASHBOARD
-@staff_member_required
+from django.contrib.auth.models import User
+from django.db.models import Sum
+from .models import Product, Order
+
 def admin_dashboard(request):
-    orders = Order.objects.all().order_by('-created_at')
+    if not request.user.is_superuser:
+        return redirect('/')
 
-    total_sales = Order.objects.aggregate(Sum('total_price'))['total_price__sum'] or 0
+    total_users = User.objects.count()
+    total_products = Product.objects.count()
     total_orders = Order.objects.count()
-    pending_orders = Order.objects.filter(status='Pending').count()
+    total_revenue = Order.objects.aggregate(total=Sum('total_price'))['total'] or 0
 
-    return render(request, 'admin_dashboard.html', {
-        'orders': orders,
-        'total_sales': total_sales,
+    orders = Order.objects.all().order_by('-id')
+    users = User.objects.all()
+
+    context = {
+        'total_users': total_users,
+        'total_products': total_products,
         'total_orders': total_orders,
-        'pending_orders': pending_orders
-    })
+        'total_revenue': total_revenue,
+        'orders': orders,
+        'users': users
+    }
 
+    return render(request, 'admin_dashboard.html', context)
 
 # 🔄 UPDATE ORDER STATUS
 @staff_member_required
@@ -479,3 +520,16 @@ def upi_payment(request):
             'total': temp_order['total']
         }
     })
+def add_stock(request, id):
+    product = Product.objects.get(id=id)
+    product.stock += 1
+    product.save()
+    return redirect('/admin-dashboard/')
+
+
+def remove_stock(request, id):
+    product = Product.objects.get(id=id)
+    if product.stock > 0:
+        product.stock -= 1
+        product.save()
+    return redirect('/admin-dashboard/')
