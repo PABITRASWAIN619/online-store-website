@@ -23,8 +23,7 @@ SECRET_KEY = 'django-insecure-hkhv*147*h!s0u4-4a1%$u50!@48bu2-)43lorhkt0n5xjp3iv
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["pabitra-shop.onrender.com", "127.0.0.1", "localhost"]
 
 
 # Application definition
