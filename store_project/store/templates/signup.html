@@ -2,67 +2,96 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Signup-Shopmate</title>
+    <title>Signup - ShopMate</title>
 
-    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", sans-serif;
+        box-sizing: border-box;
+      }
+
       body {
+        height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        background: #111;
-        font-family: Roboto;
+        background: linear-gradient(135deg, #141e30, #243b55);
       }
 
-      .signup-box {
-        background: white;
+      .box {
+        width: 380px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
         padding: 40px;
-        border-radius: 15px;
-        width: 350px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         text-align: center;
+        color: white;
       }
 
-      input,
-      button {
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      input {
         width: 100%;
         padding: 12px;
         margin: 10px 0;
+        border: none;
+        border-radius: 10px;
+        outline: none;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: #ff9800;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+        background: #e68900;
+      }
+
+      a {
+        display: block;
+        margin-top: 15px;
+        color: white;
+        text-decoration: none;
       }
     </style>
   </head>
 
   <body>
-    <div class="signup-box">
+    <div class="box">
       <h2>Create Account</h2>
 
-      <form method="POST">
+      <form method="POST" id="signupForm">
         {% csrf_token %}
 
         <input type="text" name="username" placeholder="Username" required />
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Gmail only"
-          pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
-          required
-        />
+        <input type="email" name="email" placeholder="Enter Email" required />
 
         <input
           type="password"
           name="password"
-          placeholder="Password"
+          placeholder="Password (min 6 chars)"
           required
         />
-
         <input
           type="password"
           name="confirm_password"
@@ -75,5 +104,38 @@
 
       <a href="/login/">Already have account?</a>
     </div>
+
+    <script>
+      document
+        .getElementById("signupForm")
+        .addEventListener("submit", function (e) {
+          let pass = document.querySelector("[name='password']").value;
+          let confirm = document.querySelector(
+            "[name='confirm_password']",
+          ).value;
+
+          if (pass.length < 6) {
+            e.preventDefault();
+            Swal.fire("Password must be at least 6 characters");
+            return;
+          }
+
+          if (pass !== confirm) {
+            e.preventDefault();
+            Swal.fire("Passwords do not match");
+          }
+        });
+    </script>
+
+    {% if messages %}
+    <script>
+      {% for message in messages %}
+      Swal.fire({
+        icon: "{{ message.tags }}",
+        title: "{{ message }}"
+      });
+      {% endfor %}
+    </script>
+    {% endif %}
   </body>
 </html>

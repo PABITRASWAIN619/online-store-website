@@ -102,28 +102,27 @@ def signup_view(request):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
-        # ✅ Gmail validation
-        if not re.match(r'^[a-zA-Z0-9._%+-]+@gmail\.com$', email):
-            messages.error(request, "Email must be a valid Gmail address!")
-            return redirect('/signup/')
-
-        # ✅ Password match check
+        # Password match check
         if password != confirm_password:
             messages.error(request, "Passwords do not match!")
             return redirect('/signup/')
 
-        # ✅ Username exists check
+        # Username check
         if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
+            messages.error(request, "Username already exists!")
             return redirect('/signup/')
 
-        # ✅ Email exists check (optional but good)
+        # Email check
         if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered")
+            messages.error(request, "Email already registered!")
             return redirect('/signup/')
 
-        # ✅ Create user
-        User.objects.create_user(username=username, email=email, password=password)
+        # Create user
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
 
         messages.success(request, "Account created successfully!")
         return redirect('/login/')
@@ -132,6 +131,11 @@ def signup_view(request):
 
 
 # 🔐 LOGIN
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+
 def login_view(request):
     if request.method == "POST":
         email = request.POST.get('email')
@@ -139,23 +143,20 @@ def login_view(request):
 
         try:
             user_obj = User.objects.get(email=email)
-            username = user_obj.username
+            username = user_obj.username  # Django needs username internally
         except User.DoesNotExist:
-            messages.error(request, "Invalid email")
+            messages.error(request, "Invalid email or password")
             return redirect('/login/')
 
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            return redirect('/home/')  # or your dashboard
+            return redirect('/home/')
         else:
-            messages.error(request, "Invalid password")
-            return redirect('/login/')
+            messages.error(request, "Invalid email or password")
 
     return render(request, 'login.html')
-
-
 # 🔓 LOGOUT
 def logout_view(request):
     logout(request)
@@ -533,3 +534,80 @@ def remove_stock(request, id):
         product.stock -= 1
         product.save()
     return redirect('/admin-dashboard/')
+import random
+
+def send_otp(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+
+        otp = str(random.randint(1000, 9999))
+
+        request.session['otp'] = otp
+        request.session['email'] = email
+
+        send_mail(
+            "Your OTP Code",
+            f"Your OTP is {otp}",
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False
+        )
+
+        return redirect('/verify-otp/')
+import random
+from django.core.mail import send_mail
+from django.conf import settings
+from django.shortcuts import render, redirect
+
+def send_otp(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+
+        otp = str(random.randint(1000, 9999))
+
+        request.session['otp'] = otp
+        request.session['email'] = email
+
+        send_mail(
+            "Your OTP Code",
+            f"Your OTP is {otp}",
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False
+        )
+
+        return redirect('/verify-otp/')
+
+    return render(request, 'send_otp.html')
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import HttpResponse
+
+def test_email(request):
+    send_mail(
+        "Test Email",
+        "OTP working test",
+        settings.EMAIL_HOST_USER,
+        [settings.EMAIL_HOST_USER],
+        fail_silently=False
+    )
+    return HttpResponse("Email sent")
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+
+def verify_otp(request):
+    if request.method == "POST":
+        entered = request.POST.get('otp')
+        real = request.session.get('otp')
+        email = request.session.get('email')
+
+        if entered == real:
+            user, _ = User.objects.get_or_create(username=email, email=email)
+            login(request, user)
+            return redirect('/home/')
+        else:
+            messages.error(request, "Invalid OTP")
+
+    return render(request, 'verify_otp.html')

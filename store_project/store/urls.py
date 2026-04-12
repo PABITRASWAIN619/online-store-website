@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from store import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -51,7 +51,10 @@ urlpatterns = [
     path('invoice/<int:order_id>/', views.invoice),
 path('add-stock/<int:id>/', views.add_stock),
 path('remove-stock/<int:id>/', views.remove_stock),
-
+path('accounts/', include('allauth.urls')),
+path('otp-login/', views.send_otp),
+path('verify-otp/', views.verify_otp),
+path('test-email/', views.test_email),
     
 ]
 
