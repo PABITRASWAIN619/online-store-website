@@ -1,8 +1,105 @@
 {% extends 'base.html' %} {% block content %}
-<h2 style="text-align: center">Contact Us</h2>
 
-<p style="text-align: center">
-  Email: support@shopmate.com <br />
-  Phone: +91 8658302086
-</p>
+<!doctype html>
+<html>
+  <head>
+    <title>Contact Us</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #eef2f3, #ffffff);
+        margin: 0;
+      }
+
+      .container {
+        width: 50%;
+        margin: 60px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      h2 {
+        color: #2a5298;
+        margin-bottom: 20px;
+      }
+
+      .info-box {
+        background: #f7f9fc;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+      }
+
+      .info-box p {
+        font-size: 16px;
+        margin: 10px 0;
+        color: #333;
+      }
+
+      .highlight {
+        color: #2a5298;
+        font-weight: bold;
+      }
+
+      .btn {
+        margin-top: 20px;
+        display: inline-block;
+        padding: 10px 20px;
+        background: linear-gradient(45deg, #2196f3, #21cbf3);
+        color: white;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: 0.3s;
+        font-weight: bold;
+      }
+
+      .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* mobile */
+      @media (max-width: 768px) {
+        .container {
+          width: 90%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>📞 Contact Us</h2>
+
+      <p>We are here to help you anytime 💙</p>
+
+      <div class="info-box">
+        <p>📧 Email: <span class="highlight">support@shopmate.com</span></p>
+        <p>📱 Phone: <span class="highlight">+91 8658302086</span></p>
+        <p>⏰ Support Hours: 9 AM - 9 PM</p>
+        <p>📍 Location: India</p>
+      </div>
+
+      <a href="/help/" class="btn">Go to Help Center</a>
+    </div>
+  </body>
+</html>
+
 {% endblock %}

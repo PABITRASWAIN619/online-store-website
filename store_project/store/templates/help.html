@@ -95,6 +95,12 @@
   </head>
 
   <body>
+    <div
+      id="notify"
+      style="display: none; background: red; color: white; padding: 10px"
+    >
+      🔔 New reply received!
+    </div>
     <div class="chat-box">
       <!-- HEADER -->
       <div class="header">
@@ -169,6 +175,15 @@
 
       // FIRST LOAD
       loadMessages();
+      setInterval(() => {
+        fetch(window.location.href)
+          .then((res) => res.text())
+          .then((html) => {
+            if (html.includes("is_replied")) {
+              document.getElementById("notify").style.display = "block";
+            }
+          });
+      }, 5000);
     </script>
   </body>
 </html>
