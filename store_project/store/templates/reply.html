@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Reply</title>
+  </head>
+  <body>
+    <h2>Reply to {{ issue.user.username }}</h2>
+
+    <p><b>User Message:</b> {{ issue.message }}</p>
+
+    <form method="POST">
+      {% csrf_token %}
+      <textarea name="reply" placeholder="Type your reply"></textarea>
+      <br /><br />
+      <button type="submit">Send Reply</button>
+    </form>
+  </body>
+</html>

@@ -18,6 +18,9 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     rating = models.FloatField(default=0)
 
+    # 👉 ADD THIS HERE
+    stock = models.IntegerField(default=0)
+
     def __str__(self):
         return self.name
 
@@ -70,6 +73,20 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, blank=True)
     image = models.ImageField(upload_to='profile/', default='default.png')
+
+   # ✅ SUPPORT MESSAGE
+class SupportMessage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.message[:20]}"
+     # 🔥 NEW FIELDS
+    reply = models.TextField(blank=True, null=True)
+    is_replied = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username

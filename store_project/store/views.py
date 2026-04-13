@@ -28,7 +28,7 @@ from django.db.models import Sum
 from .models import Product, Cart, CartItem, Order, OrderItem, Category, Profile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-
+from .models import  SupportMessage
 import requests
 import razorpay
 
@@ -440,22 +440,29 @@ def about(request):
 def contact(request):
     return render(request, 'contact.html')
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import SupportMessage
 
-# 🛠 HELP
+# 🛠 HELP PAGE
 def help_support(request):
     return render(request, 'help.html')
 
 
-# ⚙ SETTINGS
-def settings_page(request):
-    return render(request, 'settings.html')
-
-
-# 📩 SEND SUPPORT
+# 📩 SEND SUPPORT MESSAGE
 def send_support(request):
     if request.method == "POST":
         message = request.POST.get('message')
 
+        # ✅ Save to database
+        SupportMessage.objects.create(
+            user=request.user,
+            message=message
+        )
+
+        # ✅ Send email to admin
         send_mail(
             "Support Request",
             message,
@@ -464,15 +471,18 @@ def send_support(request):
             fail_silently=True
         )
 
-        messages.success(request, "Message sent!")
+        messages.success(request, "Message sent successfully!")
 
     return redirect('/help/')
 
 
+# ⚙ SETTINGS PAGE
+def settings_page(request):
+    return render(request, 'settings.html')
+
+
 # 🛒 ADMIN DASHBOARD
-from django.contrib.auth.models import User
-from django.db.models import Sum
-from .models import Product, Order
+from .models import Product, Order, SupportMessage
 
 def admin_dashboard(request):
     if not request.user.is_superuser:
@@ -486,13 +496,17 @@ def admin_dashboard(request):
     orders = Order.objects.all().order_by('-id')
     users = User.objects.all()
 
+    # 👉 ADD THIS HERE
+    messages_data = SupportMessage.objects.all().order_by('-id')
+
     context = {
         'total_users': total_users,
         'total_products': total_products,
         'total_orders': total_orders,
         'total_revenue': total_revenue,
         'orders': orders,
-        'users': users
+        'users': users,
+        'issues': messages_data   # 👉 ADD THIS
     }
 
     return render(request, 'admin_dashboard.html', context)
@@ -593,6 +607,7 @@ def test_email(request):
     )
     return HttpResponse("Email sent")
 from django.shortcuts import render, redirect
+
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login
@@ -611,3 +626,44 @@ def verify_otp(request):
             messages.error(request, "Invalid OTP")
 
     return render(request, 'verify_otp.html')
+from django.core.mail import send_mail
+from django.conf import settings
+
+def reply_issue(request, id):
+    issue = SupportMessage.objects.get(id=id)
+
+    if request.method == "POST":
+        reply_msg = request.POST.get('reply')
+
+        # Save reply
+        issue.reply = reply_msg
+        issue.is_replied = True
+        issue.save()
+
+        # Send email to user
+        send_mail(
+            "Reply from Support",
+            reply_msg,
+            settings.EMAIL_HOST_USER,
+            [issue.user.email],
+            fail_silently=True
+        )
+
+        messages.success(request, "Reply sent!")
+
+        return redirect('/admin-dashboard/')
+
+    return render(request, 'reply.html', {'issue': issue})
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib import messages
+
+def resolve_issue(request, id):
+    # Example: get support issue (change model name if different)
+    issue = get_object_or_404(Support, id=id)
+
+    # Mark as resolved (make sure your model has this field)
+    issue.status = 'Resolved'
+    issue.save()
+
+    messages.success(request, "Issue resolved successfully ✅")
+    return redirect('admin_dashboard')

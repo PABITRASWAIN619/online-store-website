@@ -10,16 +10,25 @@
         margin: 0;
       }
 
-      /* HEADER */
       header {
         background: linear-gradient(45deg, #1e3c72, #2a5298);
         color: white;
         padding: 15px;
         text-align: center;
         font-size: 22px;
+        position: relative;
       }
 
-      /* STATS */
+      .badge {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        background: red;
+        padding: 5px 10px;
+        border-radius: 50%;
+        color: white;
+      }
+
       .stats {
         display: flex;
         gap: 20px;
@@ -48,7 +57,6 @@
         background: #4caf50;
       }
 
-      /* TABLE */
       table {
         width: 95%;
         margin: 20px auto;
@@ -70,7 +78,6 @@
         color: white;
       }
 
-      /* BUTTONS */
       button {
         padding: 6px 10px;
         border: none;
@@ -88,30 +95,35 @@
       .cancel {
         background: red;
       }
+
+      /* POPUP */
+      #replyBox {
+        display: none;
+        position: fixed;
+        top: 30%;
+        left: 40%;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px gray;
+      }
     </style>
   </head>
 
   <body>
-    <header>🛠 Admin Dashboard</header>
+    <header>
+      🛠 Admin Dashboard
+      <span class="badge">{{ unread_count }}</span>
+    </header>
 
     <!-- STATS -->
     <div class="stats">
-      <div class="stat-box users">
-        👤 Users <br />
-        {{ total_users }}
-      </div>
+      <div class="stat-box users">👤 Users <br />{{ total_users }}</div>
       <div class="stat-box products">
-        🛍 Products <br />
-        {{ total_products }}
+        🛍 Products <br />{{ total_products }}
       </div>
-      <div class="stat-box orders">
-        📦 Orders <br />
-        {{ total_orders }}
-      </div>
-      <div class="stat-box revenue">
-        💰 Revenue <br />
-        ₹{{ total_revenue }}
-      </div>
+      <div class="stat-box orders">📦 Orders <br />{{ total_orders }}</div>
+      <div class="stat-box revenue">💰 Revenue <br />₹{{ total_revenue }}</div>
     </div>
 
     <!-- USERS -->
@@ -151,6 +163,7 @@
         <td>{{ order.status }}</td>
 
         <td>
+          {% if order.status != "Delivered" and order.status != "Cancelled" %}
           <a href="/update-status/{{ order.id }}/Shipped/">
             <button class="ship">Ship</button>
           </a>
@@ -162,9 +175,100 @@
           <a href="/update-status/{{ order.id }}/Cancelled/">
             <button class="cancel">Cancel</button>
           </a>
+          {% else %}
+          <span style="color: gray; font-weight: bold">✔ Completed</span>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
     </table>
+
+    <!-- SUPPORT -->
+    <h2 style="text-align: center">📩 User Issues</h2>
+
+    <table>
+      <tr>
+        <th>User</th>
+        <th>Message</th>
+        <th>Date</th>
+        <th>Reply</th>
+        <th>Action</th>
+      </tr>
+
+      {% for msg in issues %}
+      <tr>
+        <td>{{ msg.user.username }}</td>
+        <td>{{ msg.message }}</td>
+        <td>{{ msg.created_at }}</td>
+
+        <!-- SHOW REPLY -->
+        <td>
+          {% if msg.reply %} {{ msg.reply }} {% else %}
+          <span style="color: gray">No reply</span>
+          {% endif %}
+        </td>
+
+        <!-- ACTION -->
+        <td>
+          {% if not msg.is_replied %}
+          <button onclick="openReply({{ msg.id }})" style="background: orange">
+            Reply
+          </button>
+          {% else %}
+          <a href="/resolve/{{ msg.id }}/">
+            <button style="background: green">Done</button>
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">No messages yet</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div id="replyBox">
+      <form id="replyForm" method="POST">
+        {% csrf_token %}
+
+        <!-- 🔥 ADD THIS -->
+        <input type="hidden" id="msgId" />
+
+        <textarea
+          id="replyText"
+          name="reply"
+          placeholder="Type reply..."
+          required
+        ></textarea
+        ><br /><br />
+
+        <button type="submit" style="background: green">Send</button>
+        <button type="button" onclick="closeReply()">Close</button>
+      </form>
+    </div>
+
+    <!-- JS -->
+    <script>
+      document.getElementById("replyForm").onsubmit = function (e) {
+        e.preventDefault();
+
+        let id = document.getElementById("msgId").value;
+        let reply = document.getElementById("replyText").value;
+
+        fetch(`/reply/${id}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
+              .value,
+          },
+          body: `reply=${encodeURIComponent(reply)}`,
+        }).then(() => {
+          alert("Reply sent ✅");
+          location.reload();
+        });
+      };
+    </script>
   </body>
 </html>
