@@ -447,8 +447,13 @@ from django.conf import settings
 from .models import SupportMessage
 
 # 🛠 HELP PAGE
+@login_required
 def help_support(request):
-    return render(request, 'help.html')
+    user_messages = SupportMessage.objects.filter(user=request.user).order_by('-id')
+
+    return render(request, 'help.html', {
+        'messages': user_messages
+    })
 
 
 # 📩 SEND SUPPORT MESSAGE
@@ -656,14 +661,27 @@ def reply_issue(request, id):
     return render(request, 'reply.html', {'issue': issue})
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
-
 def resolve_issue(request, id):
-    # Example: get support issue (change model name if different)
-    issue = get_object_or_404(Support, id=id)
+    issue = get_object_or_404(SupportMessage, id=id)
 
-    # Mark as resolved (make sure your model has this field)
-    issue.status = 'Resolved'
+    issue.is_replied = True
     issue.save()
 
     messages.success(request, "Issue resolved successfully ✅")
     return redirect('admin_dashboard')
+from django.http import JsonResponse
+from .models import SupportMessage
+
+@login_required
+def get_messages(request):
+    msgs = SupportMessage.objects.filter(user=request.user).order_by('id')
+
+    data = []
+    for m in msgs:
+        data.append({
+            'message': m.message,
+            'reply': m.reply,
+            'is_replied': m.is_replied
+        })
+
+    return JsonResponse({'messages': data})

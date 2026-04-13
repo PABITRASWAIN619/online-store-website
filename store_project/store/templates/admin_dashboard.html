@@ -182,7 +182,6 @@
       </tr>
       {% endfor %}
     </table>
-
     <!-- SUPPORT -->
     <h2 style="text-align: center">📩 User Issues</h2>
 
@@ -211,9 +210,9 @@
         <!-- ACTION -->
         <td>
           {% if not msg.is_replied %}
-          <button onclick="openReply({{ msg.id }})" style="background: orange">
-            Reply
-          </button>
+          <a href="/reply/{{ msg.id }}/">
+            <button style="background: orange">Reply</button>
+          </a>
           {% else %}
           <a href="/resolve/{{ msg.id }}/">
             <button style="background: green">Done</button>
@@ -250,25 +249,41 @@
 
     <!-- JS -->
     <script>
-      document.getElementById("replyForm").onsubmit = function (e) {
-        e.preventDefault();
+      function openReply(id) {
+        // show popup
+        document.getElementById("replyBox").style.display = "block";
 
-        let id = document.getElementById("msgId").value;
-        let reply = document.getElementById("replyText").value;
+        // after 1 second → redirect
+        setTimeout(() => {
+          window.location.href = `/reply/${id}/`;
+        }, 800);
+      }
 
-        fetch(`/reply/${id}/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
-              .value,
-          },
-          body: `reply=${encodeURIComponent(reply)}`,
-        }).then(() => {
-          alert("Reply sent ✅");
-          location.reload();
-        });
-      };
+      function closeReply() {
+        document.getElementById("replyBox").style.display = "none";
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("replyForm").onsubmit = function (e) {
+          e.preventDefault();
+
+          let id = document.getElementById("msgId").value;
+          let reply = document.getElementById("replyText").value;
+
+          fetch(`/reply/${id}/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "X-CSRFToken": document.querySelector(
+                "[name=csrfmiddlewaretoken]",
+              ).value,
+            },
+            body: `reply=${encodeURIComponent(reply)}`,
+          }).then(() => {
+            alert("Reply sent ✅");
+            location.reload();
+          });
+        };
+      });
     </script>
   </body>
 </html>

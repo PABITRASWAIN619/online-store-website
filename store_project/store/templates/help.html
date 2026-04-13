@@ -1,155 +1,174 @@
 <!doctype html>
 <html>
   <head>
-    <title>Help & Support</title>
+    <title>Support Chat</title>
 
     <style>
       body {
         font-family: Arial;
-        background: linear-gradient(to right, #eef2f3, #ffffff);
+        background: #ece5dd;
         margin: 0;
       }
 
-      .container {
-        width: 45%;
-        margin: 50px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        animation: fadeIn 0.5s ease-in-out;
+      .chat-box {
+        max-width: 500px;
+        margin: auto;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
       }
 
-      h2 {
-        text-align: center;
-        color: #2a5298;
-        margin-bottom: 10px;
+      /* HEADER */
+      .header {
+        background: #075e54;
+        color: white;
+        padding: 15px;
+        font-size: 18px;
+      }
+
+      .online {
+        font-size: 12px;
+        color: lightgreen;
+      }
+
+      /* MESSAGES */
+      .messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        background: #e5ddd5;
+      }
+
+      .msg {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 70%;
+      }
+
+      .user {
+        background: #dcf8c6;
+        margin-left: auto;
+        text-align: right;
+      }
+
+      .admin {
+        background: #fff;
+        margin-right: auto;
+      }
+
+      /* INPUT */
+      .input-box {
+        display: flex;
+        padding: 10px;
+        background: #f0f0f0;
       }
 
       textarea {
-        width: 100%;
-        height: 120px;
-        padding: 12px;
-        margin-top: 15px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
+        flex: 1;
+        padding: 10px;
+        border-radius: 20px;
+        border: none;
+        resize: none;
         outline: none;
-        transition: 0.3s;
-      }
-
-      textarea:focus {
-        border-color: #2a5298;
-        box-shadow: 0 0 8px rgba(42, 82, 152, 0.3);
       }
 
       button {
-        background: linear-gradient(45deg, #2196f3, #21cbf3);
-        color: white;
-        padding: 10px 18px;
+        margin-left: 10px;
+        padding: 10px 15px;
         border: none;
-        margin-top: 15px;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: 0.3s;
-        font-weight: bold;
-      }
-
-      button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      }
-
-      a {
-        text-decoration: none;
-      }
-
-      .settings-btn {
-        display: inline-block;
-        margin-top: 15px;
-        background: linear-gradient(45deg, #4caf50, #66bb6a);
-        padding: 10px 18px;
+        background: #075e54;
         color: white;
-        border-radius: 25px;
-        transition: 0.3s;
+        border-radius: 50%;
+        cursor: pointer;
       }
 
-      .settings-btn:hover {
-        transform: scale(1.05);
-      }
-
-      .faq {
-        margin-top: 30px;
-        padding: 15px;
-        background: #f9f9f9;
-        border-radius: 10px;
-      }
-
-      .faq h3 {
-        color: #ff9800;
-        margin-bottom: 10px;
-      }
-
-      .faq p {
-        margin: 5px 0;
-      }
-
-      .faq b {
-        color: #333;
-      }
-
-      /* ANIMATION */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* MOBILE RESPONSIVE */
-      @media (max-width: 768px) {
-        .container {
-          width: 90%;
+      /* MOBILE */
+      @media (max-width: 600px) {
+        .chat-box {
+          width: 100%;
+          height: 100vh;
         }
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <h2>🛠 Help & Support</h2>
-
-      <h2>Help & Support</h2>
-
-      <form method="POST" action="/send-support/">
-        {% csrf_token %}
-        <textarea name="message" placeholder="Enter your issue"></textarea>
-        <button type="submit">Send</button>
-      </form>
-
-      <a href="/settings/">Go to Settings</a>
-
-      <div class="faq">
-        <h3>📌 FAQ</h3>
-
-        <p><b>How to track order?</b></p>
-        <p>Go to Orders → Click Track Order</p>
-
-        <p><b>How to cancel order?</b></p>
-        <p>You can cancel when order status is Pending.</p>
-
-        <p><b>Payment failed?</b></p>
-        <p>Please retry payment or contact support.</p>
+    <div class="chat-box">
+      <!-- HEADER -->
+      <div class="header">
+        🛠 Support Chat <br />
+        <span class="online">🟢 Support Online</span>
       </div>
 
-      <br />
+      <!-- CHAT -->
+      <div class="messages" id="chat"></div>
 
-      <a href="/settings/">
-        <button style="background: green">⚙ Settings</button>
-      </a>
+      <!-- INPUT -->
+      <form class="input-box" method="POST" action="/send-support/">
+        {% csrf_token %}
+        <textarea
+          name="message"
+          placeholder="Type your message..."
+          required
+        ></textarea>
+        <button type="submit">➤</button>
+      </form>
     </div>
+
+    <!-- 🔊 SOUND -->
+    <audio id="notifSound">
+      <source
+        src="https://www.soundjay.com/buttons/sounds/button-3.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <script>
+      let lastReplies = 0;
+
+      function loadMessages() {
+        fetch("/get-messages/")
+          .then((res) => res.json())
+          .then((data) => {
+            let chat = document.getElementById("chat");
+            chat.innerHTML = "";
+
+            let replyCount = 0;
+
+            data.messages.forEach((msg) => {
+              // USER MESSAGE
+              chat.innerHTML += `
+          <div class="msg user">${msg.message}</div>
+        `;
+
+              // ADMIN REPLY
+              if (msg.is_replied) {
+                chat.innerHTML += `
+            <div class="msg admin">${msg.reply}</div>
+          `;
+                replyCount++;
+              }
+            });
+
+            // 🔔 PLAY SOUND ONLY IF NEW REPLY
+            if (replyCount > lastReplies) {
+              document.getElementById("notifSound").play();
+            }
+
+            lastReplies = replyCount;
+
+            // AUTO SCROLL
+            chat.scrollTop = chat.scrollHeight;
+          });
+      }
+
+      // AUTO REFRESH EVERY 3 SEC
+      setInterval(loadMessages, 3000);
+
+      // FIRST LOAD
+      loadMessages();
+    </script>
   </body>
 </html>
