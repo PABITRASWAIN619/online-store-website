@@ -2,14 +2,104 @@
 <html>
   <head>
     <title>UPI Payment</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #e3f2fd, #ffffff);
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        width: 350px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        animation: fadeIn 0.4s ease-in-out;
+      }
+
+      h2 {
+        color: #1e88e5;
+        margin-bottom: 10px;
+      }
+
+      .order {
+        font-size: 16px;
+        margin: 10px 0;
+        color: #333;
+      }
+
+      .amount {
+        font-size: 22px;
+        font-weight: bold;
+        color: #4caf50;
+        margin: 15px 0;
+      }
+
+      button {
+        background: linear-gradient(45deg, #2196f3, #21cbf3);
+        border: none;
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: 0.3s;
+        width: 100%;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .upi-logo {
+        font-size: 40px;
+        margin-bottom: 10px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* MOBILE */
+      @media (max-width: 480px) {
+        .card {
+          width: 90%;
+        }
+      }
+    </style>
   </head>
+
   <body>
-    <h2>UPI Payment Simulation</h2>
-    <p>Order #{{ order.id }} - ₹{{ order.total }}</p>
-    <form method="POST" action="{% url 'payment_success' %}">
-      {% csrf_token %}
-      <input type="hidden" name="order_id" value="{{ order.id }}" />
-      <button type="submit">Simulate UPI Success</button>
-    </form>
+    <div class="card">
+      <div class="upi-logo">📱</div>
+
+      <h2>UPI Payment</h2>
+
+      <p class="order">Order #{{ order.id }}</p>
+
+      <p class="amount">₹{{ order.total }}</p>
+
+      <form method="POST" action="{% url 'payment_success' %}">
+        {% csrf_token %}
+        <input type="hidden" name="order_id" value="{{ order.id }}" />
+
+        <button type="submit">Pay Now (Simulated)</button>
+      </form>
+    </div>
   </body>
 </html>

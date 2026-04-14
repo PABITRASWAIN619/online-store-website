@@ -109,9 +109,8 @@
         cursor: pointer;
       }
 
-      /* FOOTER */
       footer {
-        background: #222;
+        background: #1c1c1c;
         color: white;
         padding: 40px 20px;
         display: flex;
@@ -121,51 +120,34 @@
 
       .footer-col {
         flex: 1;
-        min-width: 200px;
+        min-width: 220px;
         margin: 10px;
       }
 
       .footer-col h3 {
+        color: orange;
         margin-bottom: 15px;
-        color: #ff9800;
       }
 
       .footer-col a,
       .footer-col p {
-        color: white;
-        text-decoration: none;
-        margin-bottom: 8px;
         display: block;
+        color: #ccc;
+        margin-bottom: 8px;
+        text-decoration: none;
       }
 
       .footer-col a:hover {
-        text-decoration: underline;
-      }
-
-      .social-icons {
-        margin-top: 10px;
-      }
-
-      .social-icons a {
-        display: inline-block;
-        margin-right: 10px;
-        color: white;
-        font-size: 1.2rem;
-        transition: 0.3s;
-      }
-
-      .social-icons a:hover {
-        color: #ff9800;
+        color: orange;
       }
 
       .footer-bottom {
-        text-align: center;
         width: 100%;
+        text-align: center;
         margin-top: 20px;
         border-top: 1px solid #444;
         padding-top: 15px;
-        font-size: 0.9rem;
-        color: #ccc;
+        color: #aaa;
       }
     </style>
   </head>
@@ -189,6 +171,8 @@
     >
       🆘
     </a>
+
+    <!-- HEADER -->
     <header>
       <h2>SHOPMATE</h2>
 
@@ -196,56 +180,46 @@
         <a href="/home/">Home</a>
         <a href="/cart/">🛒 {{ cart_count }}</a>
 
-        <!-- ✅ ADMIN BUTTON -->
         {% if user.is_superuser %}
-        <a href="/admin-dashboard/" style="color: yellow; font-weight: bold">
-          🛠 Admin
-        </a>
-        {% endif %}
-
-        <!-- ✅ USER -->
-        {% if user.is_authenticated %}
-
+        <a href="/admin-dashboard/">🛠 Admin</a>
+        {% endif %} {% if user.is_authenticated %}
         <a href="/orders/">Orders</a>
-        <a href="/help/">Help 🆘</a>
-        <a href="/settings/">⚙️</a>
+        <a href="/help/">Help</a>
+        <a href="/settings/">Setting⚙️</a>
 
-        <a
-          href="/profile/"
-          style="
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: white;
-          "
-        >
-          {% if profile and profile.image %}
+        <!-- PROFILE ICON -->
+        <a href="/profile/" style="display: flex; align-items: center">
+          {% if profile.image %}
           <img
             src="{{ profile.image.url }}"
-            width="35"
-            height="35"
-            style="border-radius: 50%; object-fit: cover"
+            style="
+              width: 35px;
+              height: 35px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid white;
+            "
           />
           {% else %}
-          <div style="font-size: 28px">👤</div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            style="width: 35px; height: 35px; border-radius: 50%"
+          />
           {% endif %}
-
-          <span style="font-size: 12px; margin-top: 3px">Profile</span>
         </a>
 
-        <a href="/logout/">Logout</a>
+        <!-- LOGOUT -->
+        <a href="/logout/" style="margin-left: 5px">Logout</a>
 
         {% else %}
-
         <a href="/login/">Login</a>
-
         {% endif %}
       </div>
     </header>
+
     <!-- SEARCH -->
     <div class="search-box">
-      <input type="text" id="liveSearch" placeholder="🔍 Search products..." />
+      <input type="text" id="liveSearch" placeholder="Search products..." />
     </div>
 
     <!-- FILTER -->
@@ -271,32 +245,25 @@
     </div>
 
     <!-- PRODUCTS -->
-    <div class="products" id="productList">
+    <div class="products">
       {% for product in products %}
       <div class="card">
-        <img src="{{ product.image }}" alt="{{ product.name }}" />
+        {% if product.image %} <img src="{{ product.image }}" /> {% else %}
+        <img src="https://via.placeholder.com/150" /> {% endif %}
         <h3>{{ product.name }}</h3>
-        <p>₹{{ product.price }}</p>
-
-        <form method="POST" action="/add-to-cart/">
-          {% csrf_token %}
-          <input type="hidden" name="product_id" value="{{ product.id }}" />
-          <button>Add to Cart</button>
+        <p class="price">₹{{ product.price }}</p>
+        <!-- ADD TO CART (ONLY ONE METHOD - FIXED) -->
+        <form action="{% url 'add_to_cart' product.id %}" method="POST">
+          {% csrf_token %} <button type="submit">Add to Cart 🛒</button>
         </form>
       </div>
       {% endfor %}
     </div>
-
     <!-- FOOTER -->
     <footer>
       <div class="footer-col">
         <h3>ShopMate</h3>
         <p>Your one-stop online shop for electronics, clothing, and more.</p>
-        <div class="social-icons">
-          <a href="#">🐦</a>
-          <a href="#">📘</a>
-          <a href="#">📸</a>
-        </div>
       </div>
 
       <div class="footer-col">
@@ -311,7 +278,7 @@
         <h3>Contact</h3>
         <p>Email: support@shopmate.com</p>
         <p>Phone: +91 8658302086</p>
-        <p>Address: Bhubaneshwar, India</p>
+        <p>Address: Bhubaneswar, India</p>
       </div>
 
       <div class="footer-col">
@@ -325,16 +292,18 @@
       <div class="footer-bottom">© 2026 SHOPMATE. All rights reserved.</div>
     </footer>
 
-    <!-- LIVE SEARCH -->
+    <!-- SEARCH SCRIPT -->
     <script>
       document
         .getElementById("liveSearch")
         .addEventListener("keyup", function () {
           let value = this.value.toLowerCase();
           let cards = document.querySelectorAll(".card");
+
           cards.forEach((card) => {
-            let text = card.innerText.toLowerCase();
-            card.style.display = text.includes(value) ? "block" : "none";
+            card.style.display = card.innerText.toLowerCase().includes(value)
+              ? "block"
+              : "none";
           });
         });
     </script>
