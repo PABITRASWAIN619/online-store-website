@@ -155,6 +155,24 @@
         align-items: center;
         gap: 15px;
       }
+      .social-icons {
+  margin-top: 15px;
+}
+
+.social-icons a {
+  display: inline-block;
+  margin-right: 10px;
+  transition: 0.3s;
+}
+
+.social-icons img {
+  width: 30px;
+  height: 30px;
+}
+
+.social-icons a:hover {
+  transform: scale(1.2);
+}
 
       /* 📱 MOBILE FIX */
       @media (max-width: 768px) {
@@ -294,40 +312,61 @@
       {% endfor %}
     </div>
     <!-- FOOTER -->
-    <footer>
-      <div class="footer-col">
-        <h3>ShopMate</h3>
-        <p>Your one-stop online shop for electronics, clothing, and more.</p>
-      </div>
+  <!-- FOOTER -->
+<footer>
+  <div class="footer-col">
+    <h3>ShopMate</h3>
+    <p>Your one-stop online shop for electronics, clothing, and more.</p>
 
-      <div class="footer-col">
-        <h3>Quick Links</h3>
-        <a href="/home/">Home</a>
-        <a href="/about/">About</a>
-        <a href="/contact/">Contact</a>
-        <a href="/login/">Login</a>
-      </div>
+    <!-- 🌐 SOCIAL ICONS -->
+    <div class="social-icons">
+      <a href="https://facebook.com" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" />
+      </a>
 
-      <div class="footer-col">
-        <h3>Contact</h3>
-        <p>Email: support@shopmate.com</p>
-        <p>Phone: +91 8658302086</p>
-        <p>Address: Bhubaneswar, India</p>
-      </div>
+      <a href="https://instagram.com" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" />
+      </a>
 
-      <div class="footer-col">
-        <h3>About</h3>
-        <p>
-          ShopMate is a modern e-commerce platform providing quality products at
-          affordable prices.
-        </p>
-      </div>
+      <a href="https://twitter.com" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" />
+      </a>
 
-      <div class="footer-bottom">© 2026 SHOPMATE. All rights reserved.</div>
-    </footer>
+      <a href="https://wa.me/918658302086" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" />
+      </a>
 
-    <!-- SEARCH SCRIPT -->
-    <script>
+      <a href="https://t.me/yourusername" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" />
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-col">
+    <h3>Quick Links</h3>
+    <a href="/home/">Home</a>
+    <a href="/about/">About</a>
+    <a href="/contact/">Contact</a>
+    <a href="/login/">Login</a>
+  </div>
+
+  <div class="footer-col">
+    <h3>Contact</h3>
+    <p>Email: support@shopmate.com</p>
+    <p>Phone: +91 8658302086</p>
+    <p>Address: Bhubaneswar, India</p>
+  </div>
+
+  <div class="footer-col">
+    <h3>About</h3>
+    <p>
+      ShopMate is a modern e-commerce platform providing quality products at
+      affordable prices.
+    </p>
+  </div>
+
+  <div class="footer-bottom">© 2026 SHOPMATE. All rights reserved.</div>
+</footer>
       document
         .getElementById("liveSearch")
         .addEventListener("keyup", function () {
