@@ -143,8 +143,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "your_real_gmail@gmail.com"
-EMAIL_HOST_PASSWORD = "your_app_password"
+EMAIL_HOST_USER = "swainpabitra9861@gmail.com"
+EMAIL_HOST_PASSWORD = 'xhghlgdjfchwsijk'
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 AUTHENTICATION_BACKENDS = [

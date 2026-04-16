@@ -232,96 +232,17 @@ def decrease_qty(request, item_id):
 
     return redirect('/cart/')
 
-
-# 💳 CHECKOUT
-
 @login_required
 def checkout(request):
-
     cart, _ = Cart.objects.get_or_create(user=request.user)
     items = CartItem.objects.filter(cart=cart)
 
+    # ❌ Empty cart check
     if not items.exists():
         messages.error(request, "Cart is empty!")
         return redirect('/cart/')
 
-    total = sum(item.product.price * item.quantity for item in items)
-
-    if request.method == "POST":
-        address = request.POST.get('address')
-        payment = request.POST.get('payment')
-
-        if payment == "COD":
-            order = Order.objects.create(
-                user=request.user,
-                address=address,
-                total_price=total,
-                status="Pending",
-                payment_method="COD"
-            )
-
-            for item in items:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item.product,
-                    quantity=item.quantity
-                )
-
-            items.delete()
-            cart.delete()
-
-            return redirect('payment_success')
-
-    return render(request, 'checkout.html', {
-        'items': items,
-        'total': total
-    })@login_required
-def checkout(request):
-
-    cart, _ = Cart.objects.get_or_create(user=request.user)
-    items = CartItem.objects.filter(cart=cart)
-
-    if not items.exists():
-        messages.error(request, "Cart is empty!")
-        return redirect('/cart/')
-
-    total = sum(item.product.price * item.quantity for item in items)
-
-    if request.method == "POST":
-        address = request.POST.get('address')
-        payment = request.POST.get('payment')
-
-        if payment == "COD":
-            order = Order.objects.create(
-                user=request.user,
-                address=address,
-                total_price=total,
-                status="Pending",
-                payment_method="COD"
-            )
-
-            for item in items:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item.product,
-                    quantity=item.quantity
-                )
-
-            items.delete()
-            cart.delete()
-
-            return redirect('payment_success')
-
-    return render(request, 'checkout.html', {
-        'items': items,
-        'total': total
-    })
-    # ❌ FIX IMPORTANT: use exists()
-    if not items.exists():
-        messages.error(request, "Cart is empty!")
-        return redirect('/cart/')
-
-    # 💰 Calculate total
+    # 💰 Total
     total = sum(item.product.price * item.quantity for item in items)
 
     # =========================
@@ -341,7 +262,7 @@ def checkout(request):
             return redirect('/checkout/')
 
         # =========================
-        # COD ORDER
+        # ✅ COD
         # =========================
         if payment == "COD":
             order = Order.objects.create(
@@ -354,41 +275,29 @@ def checkout(request):
 
             for item in items:
                 OrderItem.objects.create(
-    order=order,
-    product=item.product,
-    quantity=item.quantity
-)
+                    order=order,
+                    product=item.product,
+                    quantity=item.quantity
+                )
 
-            # 🧹 Clear cart safely
             items.delete()
             cart.delete()
-
-            # 📧 Email
-            send_mail(
-                "Order Confirmed",
-                f"Your order #{order.id} has been placed successfully.",
-                settings.EMAIL_HOST_USER,
-                [request.user.email],
-                fail_silently=True
-            )
 
             return redirect('payment_success')
 
         # =========================
-        # UPI / CARD (SESSION FLOW)
+        # ✅ UPI / CARD
         # =========================
         elif payment in ["UPI", "Card"]:
             request.session['temp_order'] = {
-                "user_id": request.user.id,
                 "total": float(total),
                 "address": address,
                 "payment_method": payment
             }
-
             return redirect('upi_payment')
 
         # =========================
-        # RAZORPAY
+        # ✅ RAZORPAY
         # =========================
         elif payment == "Razorpay":
             client = razorpay.Client(
@@ -396,7 +305,7 @@ def checkout(request):
             )
 
             payment_order = client.order.create({
-                "amount": int(total * 100),
+                "amount": int(total * 100),  # paise
                 "currency": "INR",
                 "payment_capture": "1"
             })
@@ -420,8 +329,6 @@ def checkout(request):
         "items": items,
         "total": total
     })
-
-
 # ✅ PAYMENT SUCCESS
 @login_required
 def payment_success(request):
@@ -678,9 +585,19 @@ def remove_stock(request, id):
     return redirect('/admin-dashboard/')
 import random
 
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+import random
+
 def send_otp(request):
     if request.method == "POST":
         email = request.POST.get('email')
+
+        if not email:
+            messages.error(request, "Please enter email")
+            return redirect('/otp-login/')
 
         otp = str(random.randint(1000, 9999))
 
@@ -696,23 +613,32 @@ def send_otp(request):
         )
 
         return redirect('/verify-otp/')
-from django.contrib.auth import login
+
+    # ✅ THIS LINE FIXES YOUR ERROR
+    return render(request, 'otp_login.html')
 from django.contrib.auth.models import User
-from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.contrib.auth import login
 
 def verify_otp(request):
     if request.method == "POST":
-        entered = request.POST.get('otp')
-        real = request.session.get('otp')
+        entered_otp = request.POST.get('otp')
+        session_otp = request.session.get('otp')
         email = request.session.get('email')
 
-        if entered == real:
-            user, _ = User.objects.get_or_create(username=email, email=email)
+        if entered_otp == session_otp:
+            # 🔥 Check if user exists
+            user, created = User.objects.get_or_create(
+                username=email,
+                defaults={'email': email}
+            )
+
+            # 🔐 Auto login user
             login(request, user)
-            return redirect('/home/')
+
+            return redirect('/home/')   # redirect after login
+
         else:
-            messages.error(request, "Invalid OTP")
+            return render(request, 'verify_otp.html', {'error': 'Invalid OTP'})
 
     return render(request, 'verify_otp.html')
 from django.core.mail import send_mail
@@ -800,3 +726,21 @@ def cart_view(request):
         'items': items,
         'total': total
     })
+@login_required
+def place_order(request):
+    if request.method == "POST":
+        request.session['temp_order'] = {
+            'address': request.POST.get('address'),
+            'total': request.POST.get('total'),
+            'payment_method': request.POST.get('payment_method')
+        }
+
+        payment_method = request.POST.get('payment_method')
+
+        if payment_method == "UPI":
+            return redirect('upi_payment')
+
+        elif payment_method == "Razorpay":
+            return redirect('razorpay_payment')
+
+    return redirect('cart')

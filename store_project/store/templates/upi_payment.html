@@ -91,15 +91,11 @@
       <h2>UPI Payment</h2>
 
       <p class="order">Order #{{ order.id }}</p>
-
       <p class="amount">₹{{ order.total }}</p>
 
-      <form method="POST" action="{% url 'payment_success' %}">
-        {% csrf_token %}
-        <input type="hidden" name="order_id" value="{{ order.id }}" />
-
-        <button type="submit">Pay Now (Simulated)</button>
-      </form>
+      <button onclick="window.location.href = '/payment-success/'">
+        Pay Now
+      </button>
     </div>
   </body>
 </html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+  <head>
+    <title>OTP Login - ShopMate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      .container {
+        display: flex;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        width: 800px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      /* LEFT SIDE (IMAGE) */
+      .left {
+        flex: 1;
+        background: #f4f6f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .left img {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      /* RIGHT SIDE (FORM) */
+      .right {
+        flex: 1;
+        padding: 40px;
+        text-align: center;
+      }
+
+      h2 {
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      p {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 25px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        outline: none;
+        margin-bottom: 20px;
+        transition: 0.3s;
+      }
+
+      input:focus {
+        border-color: #ff9800;
+        box-shadow: 0 0 5px #ff9800;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        background: #ff9800;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: #e68900;
+      }
+
+      .back {
+        margin-top: 15px;
+        display: inline-block;
+        font-size: 13px;
+        color: #555;
+        text-decoration: none;
+      }
+
+      .back:hover {
+        color: #ff9800;
+      }
+
+      /* MOBILE */
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          width: 90%;
+        }
+
+        .left {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- LEFT IMAGE SECTION -->
+      <div class="left">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png"
+          alt="OTP Illustration"
+        />
+      </div>
+
+      <!-- RIGHT FORM -->
+      <div class="right">
+        <h2>OTP Login 🔐</h2>
+        <p>Enter your email to receive a one-time password</p>
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+
+          <button type="submit">Send OTP 🚀</button>
+        </form>
+
+        <a href="/login/" class="back">← Back to Login</a>
+      </div>
+    </div>
+  </body>
+</html>

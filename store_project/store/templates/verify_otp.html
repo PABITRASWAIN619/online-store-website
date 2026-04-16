@@ -2,59 +2,35 @@
 <html>
   <head>
     <title>Verify OTP</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background: #111;
-        color: white;
-        font-family: Arial;
-      }
-
-      .box {
-        background: #222;
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-      }
-
-      input,
-      button {
-        padding: 10px;
-        width: 100%;
-        margin: 10px 0;
-        border: none;
-        border-radius: 10px;
-      }
-
-      button {
-        background: green;
-        color: white;
-      }
-    </style>
   </head>
+  <body style="text-align: center; margin-top: 100px; font-family: Arial">
+    <h2>Enter OTP</h2>
 
-  <body>
-    <div class="box">
-      <h2>Enter OTP</h2>
-
-      <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="otp" placeholder="Enter OTP" required />
-        <button type="submit">Verify</button>
-      </form>
-    </div>
-
-    {% if messages %}
-    <script>
-      {% for message in messages %}
-      Swal.fire("{{ message }}");
-      {% endfor %}
-    </script>
+    {% if error %}
+    <p style="color: red">{{ error }}</p>
     {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <input
+        type="text"
+        name="otp"
+        placeholder="Enter OTP"
+        required
+        style="padding: 10px; width: 200px"
+      />
+      <br /><br />
+      <button
+        type="submit"
+        style="
+          padding: 10px 20px;
+          background: green;
+          color: white;
+          border: none;
+        "
+      >
+        Verify & Login
+      </button>
+    </form>
   </body>
 </html>
