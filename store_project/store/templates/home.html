@@ -156,23 +156,23 @@
         gap: 15px;
       }
       .social-icons {
-  margin-top: 15px;
-}
+        margin-top: 15px;
+      }
 
-.social-icons a {
-  display: inline-block;
-  margin-right: 10px;
-  transition: 0.3s;
-}
+      .social-icons a {
+        display: inline-block;
+        margin-right: 10px;
+        transition: 0.3s;
+      }
 
-.social-icons img {
-  width: 30px;
-  height: 30px;
-}
+      .social-icons img {
+        width: 30px;
+        height: 30px;
+      }
 
-.social-icons a:hover {
-  transform: scale(1.2);
-}
+      .social-icons a:hover {
+        transform: scale(1.2);
+      }
 
       /* 📱 MOBILE FIX */
       @media (max-width: 768px) {
@@ -221,8 +221,9 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         z-index: 1000;
       "
+    >
       🆘
-    ></a>
+    </a>
 
     <!-- HEADER -->
     <header>
@@ -312,73 +313,78 @@
       {% endfor %}
     </div>
     <!-- FOOTER -->
-  <!-- FOOTER -->
-<footer>
-  <div class="footer-col">
-    <h3>ShopMate</h3>
-    <p>Your one-stop online shop for electronics, clothing, and more.</p>
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-col">
+        <h3>ShopMate</h3>
+        <p>Your one-stop online shop for electronics, clothing, and more.</p>
 
-    <!-- 🌐 SOCIAL ICONS -->
-    <div class="social-icons">
-      <a href="https://facebook.com" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" />
-      </a>
+        <!-- 🌐 SOCIAL ICONS -->
+        <div class="social-icons">
+          <a href="https://facebook.com" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" />
+          </a>
 
-      <a href="https://instagram.com" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" />
-      </a>
+          <a href="https://instagram.com" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" />
+          </a>
 
-      <a href="https://twitter.com" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" />
-      </a>
+          <a href="https://twitter.com" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" />
+          </a>
 
-      <a href="https://wa.me/918658302086" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" />
-      </a>
+          <a href="https://wa.me/918658302086" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" />
+          </a>
 
-      <a href="https://t.me/yourusername" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" />
-      </a>
-    </div>
-  </div>
+          <a href="https://t.me/yourusername" target="_blank">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
+            />
+          </a>
+        </div>
+      </div>
 
-  <div class="footer-col">
-    <h3>Quick Links</h3>
-    <a href="/home/">Home</a>
-    <a href="/about/">About</a>
-    <a href="/contact/">Contact</a>
-    <a href="/login/">Login</a>
-  </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <a href="/home/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/login/">Login</a>
+      </div>
 
-  <div class="footer-col">
-    <h3>Contact</h3>
-    <p>Email: support@shopmate.com</p>
-    <p>Phone: +91 8658302086</p>
-    <p>Address: Bhubaneswar, India</p>
-  </div>
+      <div class="footer-col">
+        <h3>Contact</h3>
+        <p>Email: support@shopmate.com</p>
+        <p>Phone: +91 8658302086</p>
+        <p>Address: Bhubaneswar, India</p>
+      </div>
 
-  <div class="footer-col">
-    <h3>About</h3>
-    <p>
-      ShopMate is a modern e-commerce platform providing quality products at
-      affordable prices.
-    </p>
-  </div>
+      <div class="footer-col">
+        <h3>About</h3>
+        <p>
+          ShopMate is a modern e-commerce platform providing quality products at
+          affordable prices.
+        </p>
+      </div>
 
-  <div class="footer-bottom">© 2026 SHOPMATE. All rights reserved.</div>
-</footer>
-      document
-        .getElementById("liveSearch")
-        .addEventListener("keyup", function () {
-          let value = this.value.toLowerCase();
-          let cards = document.querySelectorAll(".card");
+      <div class="footer-bottom">© 2026 SHOPMATE. All rights reserved.</div>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("liveSearch")
+          .addEventListener("keyup", function () {
+            let value = this.value.toLowerCase();
+            let cards = document.querySelectorAll(".card");
 
-          cards.forEach((card) => {
-            card.style.display = card.innerText.toLowerCase().includes(value)
-              ? "block"
-              : "none";
+            cards.forEach((card) => {
+              card.style.display = card.innerText.toLowerCase().includes(value)
+                ? "block"
+                : "none";
+            });
           });
-        });
+      });
     </script>
   </body>
 </html>
